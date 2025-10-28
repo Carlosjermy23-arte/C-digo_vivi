@@ -1,0 +1,92 @@
+// Inicialização
+let moedas = parseInt(localStorage.getItem('moedas')) || 100;
+let moedasPremium = parseInt(localStorage.getItem('moedasPremium')) || 0;
+let skinsCompradas = JSON.parse(localStorage.getItem('skins')) || [];
+let acoesEvento = parseInt(localStorage.getItem('acoesEvento')) || 0;
+let nivel = parseInt(localStorage.getItem('nivel')) || 1;
+let conquistas = parseInt(localStorage.getItem('conquistas')) || 0;
+let ranking = JSON.parse(localStorage.getItem('ranking')) || [];
+
+function atualizarInterface() {
+    document.getElementById('moedaCount').innerText = moedas;
+    document.getElementById('moedaPremiumCount').innerText = moedasPremium;
+    document.getElementById('nivelCount').innerText = nivel;
+    document.getElementById('conquistasCount').innerText = conquistas;
+    atualizarRanking();
+    localStorage.setItem('moedas', moedas);
+    localStorage.setItem('moedasPremium', moedasPremium);
+    localStorage.setItem('nivel', nivel);
+    localStorage.setItem('conquistas', conquistas);
+    localStorage.setItem('skins', JSON.stringify(skinsCompradas));
+    localStorage.setItem('acoesEvento', acoesEvento);
+    localStorage.setItem('ranking', JSON.stringify(ranking));
+}
+
+// Funções principais
+function ganharMoedas(valor) {
+    moedas += valor;
+    atualizarInterface();
+}
+
+function ganharMoedasPremium(valor) {
+    moedasPremium += valor;
+    atualizarInterface();
+}
+
+function comprarSkin(nome, preco, premium=false) {
+    if (premium) {
+        if (moedasPremium >= preco) {
+            moedasPremium -= preco;
+            skinsCompradas.push(nome);
+            desbloquearConquista('Skin Premium Comprada!');
+        } else { alert('Moedas Premium insuficientes!'); return; }
+    } else {
+        if (moedas >= preco) {
+            moedas -= preco;
+            skinsCompradas.push(nome);
+            desbloquearConquista('Skin Comprada!');
+        } else { alert('Moedas insuficientes!'); return; }
+    }
+    atualizarInterface();
+}
+
+function completarAcao() {
+    acoesEvento++;
+    if (acoesEvento >= 5) {
+        let recompensa = 50 + nivel*10;
+        moedas += recompensa;
+        document.getElementById('evento').innerText = 'Evento diário concluído! Você ganhou ' + recompensa + ' moedas!';
+        acoesEvento = 0;
+        subirNivel();
+    }
+    atualizarInterface();
+}
+
+function subirNivel() {
+    nivel++;
+    desbloquearConquista('Subiu de nível!');
+    atualizarInterface();
+}
+
+function desbloquearConquista(nome) {
+    conquistas++;
+    alert('Conquista desbloqueada: ' + nome);
+    atualizarInterface();
+}
+
+// Ranking local
+function atualizarRanking() {
+    ranking.push({nivel, moedas, conquistas});
+    ranking.sort((a,b) => (b.nivel+b.conquistas+b.moedas) - (a.nivel+a.conquistas+a.moedas));
+    let lista = document.getElementById('rankingList');
+    lista.innerHTML = '';
+    ranking.slice(0,5).forEach(j => {
+        let li = document.createElement('li');
+        li.innerText = `Nível ${j.nivel} - Moedas ${j.moedas} - Conquistas ${j.conquistas}`;
+        lista.appendChild(li);
+    });
+}
+
+// Eventos automáticos
+setInterval(() => { completarAcao(); }, 5000);
+atualizarInterface();

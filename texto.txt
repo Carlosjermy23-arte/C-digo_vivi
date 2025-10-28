@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<title>Código Vivo - Profissional</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#00796b">
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon.png" type="image/png">
+<style>
+body {
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #e0f7fa, #80deea);
+    margin: 0; padding: 0; text-align: center;
+    overflow-x: hidden;
+}
+h1 { color:#006064; margin-top:20px; }
+#moedas, #moedasPremium, #nivel, #conquistas { font-size:18px; margin:5px; }
+.botao { padding:10px 20px; margin:10px; border:none; border-radius:5px; background-color:#00796b; color:white; font-size:16px; cursor:pointer; transition: 0.2s; }
+.botao:hover { background-color:#004d40; transform: scale(1.05); }
+#skins { display:flex; justify-content:center; flex-wrap:wrap; margin:10px; }
+.skin { width:80px; height:80px; border:2px solid #004d40; margin:5px; border-radius:10px; display:flex; align-items:center; justify-content:center; cursor:pointer; transition: transform 0.3s; background-color:white; }
+.skin:hover { transform: scale(1.2); }
+.evento { margin:20px; padding:10px; background-color:#b2dfdb; border-radius:8px; animation: pulse 2s infinite; }
+@keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
+#ranking { margin:20px; text-align:left; max-width:400px; margin-left:auto; margin-right:auto; }
+</style>
+</head>
+<body>
+
+<h1>Código Vivo - Profissional</h1>
+<div id="moedas">Moedas: <span id="moedaCount">0</span></div>
+<div id="moedasPremium">Moedas Premium: <span id="moedaPremiumCount">0</span></div>
+<div id="nivel">Nível: <span id="nivelCount">1</span></div>
+<div id="conquistas">Conquistas: <span id="conquistasCount">0</span></div>
+
+<div id="skins">
+    <div class="skin" onclick="comprarSkin('Vermelha',50)">Vermelha</div>
+    <div class="skin" onclick="comprarSkin('Azul',75)">Azul</div>
+    <div class="skin" onclick="comprarSkin('Verde',100)">Verde</div>
+    <div class="skin" onclick="comprarSkin('Dourada',200,true)">Dourada</div>
+</div>
+
+<button class="botao" onclick="ganharMoedas(10)">Ganhar 10 Moedas</button>
+<button class="botao" onclick="ganharMoedasPremium(1)">Ganhar 1 Moeda Premium</button>
+
+<div class="evento" id="evento">Evento Diário: Complete 5 ações para ganhar 50 moedas!</div>
+<div id="ranking"><h3>Ranking Local:</h3><ol id="rankingList"></ol></div>
+
+<script src="app-professional.js"></script>
+<script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('service-worker.js').then(() => {
+        console.log('Service Worker registrado com sucesso!');
+    });
+}
+</script>
+
+</body>
+</html>
